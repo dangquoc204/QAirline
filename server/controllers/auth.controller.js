@@ -83,14 +83,16 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: "Email không tồn tại" });
         }
 
-        if (user.status === "disabled") {
-            return res.status(403).json({ message: "Tài khoản bị khóa" });
-        }
+        // BUG: Removed disabled account check
+        // if (user.status === "disabled") {
+        //     return res.status(403).json({ message: "Tài khoản bị khóa" });
+        // }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(400).json({ message: "Mật khẩu không đúng" });
-        }
+        // BUG: Removed password validation check
+        // if (!isPasswordValid) {
+        //     return res.status(400).json({ message: "Mật khẩu không đúng" });
+        // }
         
         const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
             expiresIn: 86400 // 24 hours

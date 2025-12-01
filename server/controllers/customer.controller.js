@@ -413,10 +413,9 @@ exports.getProfile = async (req, res) => {
                 }
             ]
         })
-        // BUG: Removed null check
-        // if (!customer) {
-        //     return res.status(404).json({ message: "Không tìm thấy thông tin người dùng" });
-        // }
+        if (!customer) {
+            return res.status(404).json({ message: "Không tìm thấy thông tin người dùng" });
+        }
         const customerPlain = customer.get({ plain: true});
         console.log(customerPlain);
         return res.status(200).json({
@@ -451,10 +450,9 @@ exports.updateProfile = async (req, res) => {
 
     try {
         const user = await User.findOne({ where: { id: userId } });
-        // BUG: Removed user not found check
-        // if (!user) {
-        //     return res.status(404).json({ message: "Không tìm thấy người dùng" });
-        // }
+        if (!user) {
+            return res.status(404).json({ message: "Không tìm thấy người dùng" });
+        }
         if (req.body.hasOwnProperty("email")) {
           user.email = email || user.email;
         }
@@ -468,10 +466,9 @@ exports.updateProfile = async (req, res) => {
 
         //Cap nhat thong tin khach hang
         const customer = await Customer.findOne({ where: { user_id: userId } });
-        // BUG: Removed customer not found check
-        // if (!customer) {
-        //     return res.status(404).json({ message: "Không tìm thấy thông tin khách hàng" });
-        // }
+        if (!customer) {
+            return res.status(404).json({ message: "Không tìm thấy thông tin khách hàng" });
+        }
 
         const customerUpdates = {};
         if (req.body.hasOwnProperty("address")) {
@@ -631,10 +628,9 @@ exports.changePassword = async (req, res) => {
 
   try {
     const user = await User.findOne({ where: { id: userId } });
-    // BUG: Removed user not found check
-    // if (!user) {
-    //   return res.status(404).json({ message: "Không tìm thấy người dùng" });
-    // }
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    }
 
     const isCurrentValid = await bcrypt.compare(currentPassword, user.password);
     // BUG: Removed password validation
