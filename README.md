@@ -11,3 +11,7 @@ npm start
 cd frontend
 npm i
 npm start
+
+# Chạy test
+cd server
+npm test
