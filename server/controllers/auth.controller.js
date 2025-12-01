@@ -23,6 +23,7 @@ exports.register = async (req, res) => {
             return res.status(400).json({ message: "Email đã tồn tại" });
         }
 
+        // BUG: Removed validation for password and email fields
         const hashedpassword = await bcrypt.hash(password, 10);
         const newUser = await User.create({
             email,

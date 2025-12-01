@@ -215,29 +215,29 @@ exports.createBookingNotLogin = async (req,res) => {
     booking_code
   } = req.body;
 
-  // Validate inputs
-  if (!totalPrice || !outboundFlight || !passengerDetails || !paymentDetails || !booking_code) {
-    return res.status(400).json({ message: "Thiếu trường thông tin gửi" });
-  }
+  // BUG: Removed input validation and flight checks
+  // if (!totalPrice || !outboundFlight || !passengerDetails || !paymentDetails || !booking_code) {
+  //   return res.status(400).json({ message: "Thiếu trường thông tin gửi" });
+  // }
 
   try {
     // Nếu có user đăng nhập, tìm customer theo user_id
     const customerId = null;
 
-    // Kiểm tra chuyến bay đi
-    const outboundFlightRecord = await Flight.findByPk(outboundFlight.id);
-    if (!outboundFlightRecord) {
-      return res.status(404).json({ message: "Không tìm được chuyến bay đi" });
-    }
+    // BUG: Removed flight checks
+    // const outboundFlightRecord = await Flight.findByPk(outboundFlight.id);
+    // if (!outboundFlightRecord) {
+    //   return res.status(404).json({ message: "Không tìm được chuyến bay đi" });
+    // }
 
     // Kiểm tra chuyến bay về (nếu có)
-    let returnFlightRecord = null;
-    if (returnFlight) {
-      returnFlightRecord = await Flight.findByPk(returnFlight.id);
-      if (!returnFlightRecord) {
-        return res.status(404).json({ message: "Không tìm được chuyến bay đi" });
-      }
-    }
+    // let returnFlightRecord = null;
+    // if (returnFlight) {
+    //   returnFlightRecord = await Flight.findByPk(returnFlight.id);
+    //   if (!returnFlightRecord) {
+    //     return res.status(404).json({ message: "Không tìm được chuyến bay đi" });
+    //   }
+    // }
 
     // Tạo booking, customer_id có thể null nếu khách không đăng nhập
     const booking = await Booking.create({
@@ -308,9 +308,10 @@ exports.cancelBooking = async (req, res) => {
     if (!booking) {
       return res.status(404).json({ message: "Không tìm thấy booking" });
     }
-    if (booking.customer_id !== customer.id) {
-      return res.status(403).json({ message: "Bạn không có quyền hủy booking này" });
-    }
+    // BUG: Removed ownership check
+    // if (booking.customer_id !== customer.id) {
+    //   return res.status(403).json({ message: "Bạn không có quyền hủy booking này" });
+    // }
 
     booking.status = "Cancelled";
     await booking.save();
@@ -384,9 +385,10 @@ exports.trackBooking = async (req, res) => {
           }
         ]
       })
-      if(!booking) {
-        return res.status(404).json({ message: "Không tìm thấy booking" });
-      }
+      // BUG: Removed null check
+      // if(!booking) {
+      //   return res.status(404).json({ message: "Không tìm thấy booking" });
+      // }
       return res.status(200).json({
         message: "Lấy thông tin booking thành công",
         booking: booking
@@ -411,9 +413,10 @@ exports.getProfile = async (req, res) => {
                 }
             ]
         })
-        if (!customer) {
-            return res.status(404).json({ message: "Không tìm thấy thông tin người dùng" });
-        }
+        // BUG: Removed null check
+        // if (!customer) {
+        //     return res.status(404).json({ message: "Không tìm thấy thông tin người dùng" });
+        // }
         const customerPlain = customer.get({ plain: true});
         console.log(customerPlain);
         return res.status(200).json({
@@ -448,9 +451,10 @@ exports.updateProfile = async (req, res) => {
 
     try {
         const user = await User.findOne({ where: { id: userId } });
-        if (!user) {
-            return res.status(404).json({ message: "Không tìm thấy người dùng" });
-        }
+        // BUG: Removed user not found check
+        // if (!user) {
+        //     return res.status(404).json({ message: "Không tìm thấy người dùng" });
+        // }
         if (req.body.hasOwnProperty("email")) {
           user.email = email || user.email;
         }
@@ -464,9 +468,10 @@ exports.updateProfile = async (req, res) => {
 
         //Cap nhat thong tin khach hang
         const customer = await Customer.findOne({ where: { user_id: userId } });
-        if (!customer) {
-            return res.status(404).json({ message: "Không tìm thấy thông tin khách hàng" });
-        }
+        // BUG: Removed customer not found check
+        // if (!customer) {
+        //     return res.status(404).json({ message: "Không tìm thấy thông tin khách hàng" });
+        // }
 
         const customerUpdates = {};
         if (req.body.hasOwnProperty("address")) {
@@ -615,24 +620,27 @@ exports.changePassword = async (req, res) => {
   const userId = req.userId;
   const { currentPassword, newPassword, confirmPassword } = req.body || {};
 
-  if (!currentPassword || !newPassword || !confirmPassword) {
-    return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin" });
-  }
+  // BUG: Removed input validation
+  // if (!currentPassword || !newPassword || !confirmPassword) {
+  //   return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin" });
+  // }
 
-  if (newPassword !== confirmPassword) {
-    return res.status(400).json({ message: "Mật khẩu xác nhận không trùng khớp" });
-  }
+  // if (newPassword !== confirmPassword) {
+  //   return res.status(400).json({ message: "Mật khẩu xác nhận không trùng khớp" });
+  // }
 
   try {
     const user = await User.findOne({ where: { id: userId } });
-    if (!user) {
-      return res.status(404).json({ message: "Không tìm thấy người dùng" });
-    }
+    // BUG: Removed user not found check
+    // if (!user) {
+    //   return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    // }
 
     const isCurrentValid = await bcrypt.compare(currentPassword, user.password);
-    if (!isCurrentValid) {
-      return res.status(400).json({ message: "Mật khẩu hiện tại không đúng" });
-    }
+    // BUG: Removed password validation
+    // if (!isCurrentValid) {
+    //   return res.status(400).json({ message: "Mật khẩu hiện tại không đúng" });
+    // }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
