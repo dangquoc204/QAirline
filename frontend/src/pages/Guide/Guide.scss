@@ -1,0 +1,150 @@
+/* Container chính */
+.guideContainer {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 40px 40px;
+}
+
+/* Content layout */
+.content {
+  display: flex;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #ffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* Left section - Button area */
+.buttons {
+  width: 300px;
+  /* background: #F9F7F3; */
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Button styling */
+.button {
+  width: 100%;
+  padding: 15px 20px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-left: 4px solid transparent;
+  font-size: 1rem;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+
+  &:hover {
+    background: #edf2f7;
+    color: #2d3748;
+  }
+
+  &.active {
+    background: #0d5777;
+    color: white;
+    border-left-color: #ff4d4d;
+  }
+}
+
+/* Right section - Frame content */
+.frame {
+  flex: 1;
+  padding: 30px;
+  background: #ffffff74; 
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+  & h2 {
+    color: #ff4d4d;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #edf2f7;
+    text-align: center;
+  }
+
+  & p {
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+  }
+
+  & ol {
+    & li {
+      position: relative;
+      padding: 10px 0;
+      margin-bottom: 8px;
+      color: #4a5568;
+      line-height: 1.6;
+      font-size: 1rem;
+
+      &:hover {
+        transform: translateX(8px);
+        transition: transform 0.3s ease;
+        color: #2d3748;
+      }
+    }
+
+    & ol {
+      margin-top: 10px;
+      margin-left: 15px;
+
+      & li::before {
+        background-color: #4a90e2;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .buttons {
+    width: 100%;
+  }
+
+  .button {
+    text-align: center;
+    border-left: none;
+    border-bottom: 4px solid transparent;
+
+    &.active {
+      border-left: none;
+      border-bottom-color: #ff4d4d;
+    }
+  }
+
+  .frame {
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .guideContainer {
+    margin-top: 60px;
+  }
+
+  .frame h2 {
+    font-size: 1.5rem;
+  }
+
+  .button {
+    font-size: 0.9rem;
+    padding: 12px 15px;
+  }
+}
