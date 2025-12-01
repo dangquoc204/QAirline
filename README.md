@@ -1,5 +1,5 @@
 # Clone project
-git clone https://github.com/djnhngocduc/QAirline
+git clone https://github.com/dangquoc204/QAirline.git
 cd QAirline
 
 # Chạy server
