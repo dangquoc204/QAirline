@@ -35,7 +35,12 @@ app.get("/", (req, res) => {
 });
 
 
-app.listen(port, () => {
+// Export app for testing; only start server when run directly
+if (process.env.NODE_ENV !== "test") {
+  app.listen(port, () => {
     console.log(`App listening on port ${port}`);
-})
+  });
+}
+
+module.exports = app;
 

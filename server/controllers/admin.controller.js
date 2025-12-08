@@ -259,24 +259,31 @@ exports.addFlight = async (req, res) => {
         status,
         airplaneModel
     } = req.body;
-    // BUG: Removed try-catch error handling
-    const newFlight = await flightService.addFlight(
-        flightNumber,
-        origin,
-        destination,
-        departureTime,
-        arrivalTime,
-        status,
-        airplaneModel
-    );
-    const flightWithAirplane = await Flight.findByPk(newFlight.id, {
-        include: {
-            model: Airplane,
-            attributes: ["model"]
-        }
-    });
+    try {
+        const newFlight = await flightService.addFlight(
+            flightNumber,
+            origin,
+            destination,
+            departureTime,
+            arrivalTime,
+            status,
+            airplaneModel
+        );
+        const flightWithAirplane = await Flight.findByPk(newFlight.id, {
+            include: {
+                model: Airplane,
+                attributes: ["model"]
+            }
+        });
 
-    return res.status(201).json(flightWithAirplane);
+        return res.status(201).json(flightWithAirplane);
+    } catch (error) {
+        const status = error.message?.includes("không tồn tại") ? 404 : 500;
+        return res.status(status).json({
+            message: "Tạo chuyến bay thất bại",
+            error: error.message
+        });
+    }
 }
 
 //[PATCH] /api/flight/:id
@@ -291,25 +298,39 @@ exports.editFlight = async (req, res) => {
         status,
         airplaneModel
     } = req.body;
-    
-    // BUG: Removed try-catch error handling
-    const updatedFlight = await flightService.editFlight(
-        flightId,
-        flightNumber,
-        origin,
-        destination,
-        departureTime,
-        arrivalTime,
-        status,
-        airplaneModel
-    );
-    return res.status(200).json(updatedFlight);
+
+    try {
+        const updatedFlight = await flightService.editFlight(
+            flightId,
+            flightNumber,
+            origin,
+            destination,
+            departureTime,
+            arrivalTime,
+            status,
+            airplaneModel
+        );
+        return res.status(200).json(updatedFlight);
+    } catch (error) {
+        const status = error.message?.includes("không tồn tại") ? 404 : 500;
+        return res.status(status).json({
+            message: "Chỉnh sửa chuyến bay thất bại",
+            error: error.message
+        });
+    }
 }
 
 //[DELETE] /api/flight/:id
 exports.deleteFlight = async (req, res) => {
     const id = req.params.id;
-    // BUG: Removed error handling
-    await flightService.deleteFlight(id);
-    return res.status(200).json({ message: "Xóa chuyến bay thành công" });
+    try {
+        await flightService.deleteFlight(id);
+        return res.status(200).json({ message: "Xóa chuyến bay thành công" });
+    } catch (error) {
+        const status = error.message?.includes("không tồn tại") ? 404 : 500;
+        return res.status(status).json({
+            message: "Xóa chuyến bay thất bại",
+            error: error.message
+        });
+    }
 }
